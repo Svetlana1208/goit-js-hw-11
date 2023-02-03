@@ -1,5 +1,7 @@
 import './css/styles.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
 
 const key = '33264104-6177d05b85a0a5034084eaf54';
 let url;
@@ -9,14 +11,13 @@ let markup;
 let page = 1;
 const per_page = 40;
 let totalPages;
+let counter = 0;
 
 const refs = {
     form: document.querySelector('#search-form'),
     gallery: document.querySelector('.gallery'),
     btnLoadMore: document.querySelector('.load-more'),
 };
-
-
 
 refs.form.addEventListener('submit', onSearch);
 refs.btnLoadMore.addEventListener('click', searchNext);
@@ -27,7 +28,7 @@ function onSearch(e) {
     form = e.currentTarget;
     searchQuery = form.elements.searchQuery.value;
     page = 1;
-    
+
     fetchRequest(searchQuery)
         .then(result => {
             if(result.total === 0) {
@@ -35,11 +36,16 @@ function onSearch(e) {
                 Notify.failure("Sorry, there are no images matching your search query. Please try again.");
             }
             else {
+                if(counter > 1) {
+                    Notify.info(`Hooray! We found ${result.totalHits} images.`)
+                };
+
                 onMarkUp(result);
             };
         })
 
     refs.btnLoadMore.classList.remove('is-hidden');
+    counter += 1;
 }
 
 function fetchRequest() {

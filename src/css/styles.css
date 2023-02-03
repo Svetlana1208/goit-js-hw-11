@@ -1,0 +1,50 @@
+.head {
+    background-color: rgb(16, 18, 126);
+    height: 40px;
+    /* position: fixed; */
+}
+
+.search-form {
+    padding-top: 8px;
+    display: flex;
+    justify-content: center;
+}
+
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.photo-card {
+    margin: 20px 0;
+    border-left: 0.5px #f6f1f1 solid;
+    border-right: 0.5px #f6f1f1 solid;
+    border-bottom: 1px rgba(183, 174, 174, 0.649) solid;
+}
+
+.photo-card img {
+    width: 350px;
+    height: 200px;
+}
+
+.info {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.info-item {
+    display:flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.load-more {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.is-hidden {
+    display: none;
+}

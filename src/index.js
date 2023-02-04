@@ -3,6 +3,7 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 
+
 const key = '33264104-6177d05b85a0a5034084eaf54';
 let url;
 let form;
@@ -25,6 +26,7 @@ refs.btnLoadMore.addEventListener('click', searchNext);
 function onSearch(e) {
     e.preventDefault();
     refs.gallery.innerHTML = "";
+    refs.btnLoadMore.classList.add('is-hidden');
     form = e.currentTarget;
     searchQuery = form.elements.searchQuery.value;
     page = 1;
@@ -44,8 +46,8 @@ function onSearch(e) {
             };
         })
 
-    refs.btnLoadMore.classList.remove('is-hidden');
     counter += 1;
+
 }
 
 function fetchRequest() {
@@ -66,29 +68,55 @@ function fetchRequest() {
 function onMarkUp(result) {
     markup = result.hits.map(photoCard =>
         `<div class="photo-card">
-            <img src="${photoCard.webformatURL}" alt="${photoCard.tags}" loading="lazy" />
-            <div class="info">
-            <p class="info-item">
-                <b>Likes</b>
-                <span>${photoCard.likes}
-            </p>
-            <p class="info-item">
-                <b>Views</b>
-                <span>${photoCard.views}
-            </p>
-            <p class="info-item">
-                <b>Comments</b>
-                <span>${photoCard.comments}
-            </p>
-            <p class="info-item">
-                <b>Downloads</b>
-                <span>${photoCard.downloads}
-            </p>
-        </div>
-      </div>`).join("");
+            <a class="gallery__item" href="${photoCard.largeImageURL}">
+                <img class="gallery__image" src="${photoCard.webformatURL}" alt="${photoCard.tags}" loading="lazy" />
+            </a>
+                <div class="info">
+                    <p class="info-item">
+                        <b>Likes</b>
+                        <span>${photoCard.likes}
+                    </p>
+                    <p class="info-item">
+                        <b>Views</b>
+                        <span>${photoCard.views}
+                    </p>
+                    <p class="info-item">
+                        <b>Comments</b>
+                        <span>${photoCard.comments}
+                    </p>
+                    <p class="info-item">
+                        <b>Downloads</b>
+                        <span>${photoCard.downloads}
+                    </p>
+                </div>
+            
+        </div>`)
+        .join("");
 
-      refs.gallery.insertAdjacentHTML('beforeend', markup);
-      page += 1;
+    refs.gallery.insertAdjacentHTML('beforeend', markup);
+
+    const { height: cardHeight } = document
+    .querySelector(".gallery")
+    .firstElementChild.getBoundingClientRect();
+  
+    window.scrollBy({
+    top: cardHeight * 2,
+    behavior: "smooth",
+    });
+
+    page += 1;
+
+    let newGallery = new SimpleLightbox('.photo-card a', {
+        captionSelector: 'img',
+        captionType: 'attr',
+        captionPosition: 'bottom',
+        captionDelay: '250ms',
+    });
+
+    newGallery.on('show.simplelightbox', {});
+    newGallery.refresh();
+
+    refs.btnLoadMore.classList.remove('is-hidden');
 }
 
 function searchNext() {
@@ -101,6 +129,8 @@ function searchNext() {
         
         onMarkUp(result)}
     );
+
+  
 }
 
 function toggleAlertPopup() {

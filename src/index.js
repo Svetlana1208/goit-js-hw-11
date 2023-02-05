@@ -2,15 +2,15 @@ import './css/styles.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
+import axios from 'axios';
 
 
-const key = '33264104-6177d05b85a0a5034084eaf54';
+const perPage = 40;
 let url;
 let form;
 let searchQuery;
 let markup;
 let page = 1;
-const per_page = 40;
 let totalPages;
 let counter = 0;
 
@@ -47,23 +47,25 @@ function onSearch(e) {
         })
 
     counter += 1;
-
 }
 
-function fetchRequest() {
-    const params = new URLSearchParams ({
-        page: page,
-        per_page: per_page,
-        image_type: 'photo',
-        orientation: 'horizontal',
-        safesearch: true,
-    });
+async function fetchRequest() {
+    const key = '33264104-6177d05b85a0a5034084eaf54';
+    url = `https://pixabay.com/api/?key=${key}&q=${searchQuery}&fields=webformatURL,largeImageURL,tags,likes,views,comments,downloads`;
 
-    url = `https://pixabay.com/api/?key=${key}&q=${searchQuery}&fields=webformatURL,largeImageURL,tags,likes,views,comments,downloads&${params}`;
-
-    return fetch(url)
-    .then(response => response.json())
-}; 
+    try {
+        const response = await axios.get(`${url}`, {params: {
+            page: page,
+            per_page: perPage,
+            image_type: 'photo',
+            orientation: 'horizontal',
+            safesearch: true,
+        }});
+        return response.data;
+      } catch (error) {
+        console.error(error);
+      }
+}
 
 function onMarkUp(result) {
     markup = result.hits.map(photoCard =>
@@ -94,18 +96,26 @@ function onMarkUp(result) {
         .join("");
 
     refs.gallery.insertAdjacentHTML('beforeend', markup);
+    refs.btnLoadMore.classList.remove('is-hidden');
 
-    const { height: cardHeight } = document
-    .querySelector(".gallery")
+    onScroll();
+
+    onSimpleLightbox();
+
+    page += 1;
+}
+
+function onScroll() {
+    const { height: cardHeight } = document.querySelector(".gallery")
     .firstElementChild.getBoundingClientRect();
   
     window.scrollBy({
     top: cardHeight * 2,
     behavior: "smooth",
     });
+}
 
-    page += 1;
-
+function onSimpleLightbox() {
     let newGallery = new SimpleLightbox('.photo-card a', {
         captionSelector: 'img',
         captionType: 'attr',
@@ -115,22 +125,18 @@ function onMarkUp(result) {
 
     newGallery.on('show.simplelightbox', {});
     newGallery.refresh();
-
-    refs.btnLoadMore.classList.remove('is-hidden');
 }
 
 function searchNext() {
     fetchRequest(searchQuery)
     .then(result => {
-        totalPages = result.totalHits / per_page;
+        totalPages = result.totalHits / perPage;
         if(page > totalPages) {
             return toggleAlertPopup();
         }             
         
         onMarkUp(result)}
     );
-
-  
 }
 
 function toggleAlertPopup() {

@@ -46,7 +46,6 @@
     height: 200px;
     object-fit: cover;
     transition: transform var(--animation-duration) var(--timing-function);
-
 }
 
 .info {
@@ -80,22 +79,22 @@
 
 .gallery__item {
     position: relative;
-  }
+}
   
 .gallery__image:hover {
     transform: scale(1.03);
-  }
+}
   
 .gallery__image {
     transition: transform var(--animation-duration) var(--timing-function);
-  }
+}
   
 .gallery__link {
     display: block;
     text-decoration: none;
     height: 100%;
-  }
+}
   
 .gallery__link:hover {
     cursor: zoom-in;
-  }
+}

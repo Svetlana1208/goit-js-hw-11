@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { searchQuery} from "../index";
+// import { searchQuery} from "../index";
 
 
 let url;

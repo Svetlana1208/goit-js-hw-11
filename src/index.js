@@ -2,16 +2,19 @@ import './css/styles.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
-import { fetchRequest } from "./js/fetch";
+import API from "./js/fetch";
+
 
 let form;
 let searchQuery;
 let markup;
 let totalPages;
 let counter = 0;
-const perPage = 40;
-let page = 1;
 
+export let paramsPages = {
+    page: 0,
+    perPage: 40
+};
 
 const refs = {
     form: document.querySelector('#search-form'),
@@ -28,9 +31,9 @@ function onSearch(e) {
     refs.btnLoadMore.classList.add('is-hidden');
     form = e.currentTarget;
     searchQuery = form.elements.searchQuery.value;
-    page = 1;
+    paramsPages.page = 1;
 
-    fetchRequest(searchQuery)
+    API.fetchRequest(searchQuery)
         .then(result => {
             if(result.total === 0) {
                 refs.btnLoadMore.classList.add('is-hidden');
@@ -83,7 +86,7 @@ function onMarkUp(result) {
 
     onSimpleLightbox();
 
-    page += 1;
+    paramsPages.page += 1;
 }
 
 function onScroll() {
@@ -109,10 +112,10 @@ function onSimpleLightbox() {
 }
 
 function searchNext() {
-    fetchRequest(searchQuery)
+    API.fetchRequest(searchQuery)
     .then(result => {
-        totalPages = result.totalHits / perPage + 1;
-        if(page > totalPages) {
+        totalPages = result.totalHits / paramsPages.perPage + 1;
+        if(paramsPages.page > totalPages) {
             return toggleAlertPopup();
         }             
         

@@ -4,7 +4,6 @@ import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import { fetchRequest } from "./js/fetch";
 
-
 let form;
 let searchQuery;
 let markup;
@@ -109,7 +108,7 @@ function onSimpleLightbox() {
 function searchNext() {
     fetchRequest(searchQuery)
     .then(result => {
-        totalPages = result.totalHits / perPage;
+        totalPages = result.totalHits / perPage + 1;
         if(page > totalPages) {
             return toggleAlertPopup();
         }             

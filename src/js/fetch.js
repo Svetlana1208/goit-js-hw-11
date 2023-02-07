@@ -1,8 +1,6 @@
 import axios from 'axios';
 
 let url;
-const perPage = 40;
-let page = 1;
 
 export async function fetchRequest() {
     const key = '33264104-6177d05b85a0a5034084eaf54';

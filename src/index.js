@@ -9,6 +9,9 @@ let searchQuery;
 let markup;
 let totalPages;
 let counter = 0;
+const perPage = 40;
+let page = 1;
+
 
 const refs = {
     form: document.querySelector('#search-form'),
